@@ -44,29 +44,30 @@ export default function Home() {
 
       {/* Categories */}
       {categories.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+          {/* Premium Section Header */}
           <div className="mb-12">
-            <h2 className="font-serif text-4xl font-semibold text-textDark mb-3">
+            <h2 className="font-serif text-3xl md:text-4xl font-semibold text-textDark mb-2">
               Shop by Category
             </h2>
-            <p className="text-muted text-lg mb-6">
+            <p className="text-muted text-base md:text-lg mb-6 max-w-2xl">
               Explore our curated collection of premium products
             </p>
-            <div className="h-1 w-24 bg-gradient-gold rounded-full" />
+            {/* Thin gold underline accent */}
+            <div className="h-1 w-16 bg-gold rounded-full" />
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5">
+          {/* Category Cards Grid - Smaller, Elegant Cards */}
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 md:gap-4">
             {categories.map((cat, index) => {
-              // Category-specific premium color palettes
+              // Elegant color palette for smaller cards
               const colors = [
-                { gradient: "from-slate-900 to-slate-800", accent: "from-gold to-amber-400", icon: "text-gold", light: "bg-gold/10" },
-                { gradient: "from-indigo-600 to-indigo-700", accent: "from-indigo-400 to-cyan-300", icon: "text-indigo-300", light: "bg-indigo-500/10" },
-                { gradient: "from-emerald-600 to-emerald-700", accent: "from-emerald-400 to-teal-300", icon: "text-emerald-300", light: "bg-emerald-500/10" },
-                { gradient: "from-orange-600 to-orange-700", accent: "from-orange-400 to-amber-300", icon: "text-orange-300", light: "bg-orange-500/10" },
-                { gradient: "from-rose-600 to-rose-700", accent: "from-rose-400 to-pink-300", icon: "text-rose-300", light: "bg-rose-500/10" },
-                { gradient: "from-purple-600 to-purple-700", accent: "from-purple-400 to-pink-300", icon: "text-purple-300", light: "bg-purple-500/10" },
-                { gradient: "from-cyan-600 to-cyan-700", accent: "from-cyan-400 to-blue-300", icon: "text-cyan-300", light: "bg-cyan-500/10" },
-                { gradient: "from-amber-600 to-amber-700", accent: "from-amber-400 to-yellow-300", icon: "text-amber-300", light: "bg-amber-500/10" },
+                { bg: "bg-slate-900", accent: "border-gold", icon: "text-gold", hover: "hover:bg-slate-800" },
+                { bg: "bg-indigo-600", accent: "border-indigo-400", icon: "text-indigo-300", hover: "hover:bg-indigo-700" },
+                { bg: "bg-emerald-600", accent: "border-emerald-400", icon: "text-emerald-300", hover: "hover:bg-emerald-700" },
+                { bg: "bg-orange-600", accent: "border-orange-400", icon: "text-orange-300", hover: "hover:bg-orange-700" },
+                { bg: "bg-rose-600", accent: "border-rose-400", icon: "text-rose-300", hover: "hover:bg-rose-700" },
+                { bg: "bg-teal-600", accent: "border-teal-400", icon: "text-teal-300", hover: "hover:bg-teal-700" },
               ];
               const color = colors[index % colors.length];
 
@@ -84,18 +85,12 @@ export default function Home() {
                   to={`/products?category=${cat.slug}`}
                   className="group"
                 >
-                  <div className={`relative overflow-hidden rounded-2xl h-48 md:h-56 bg-gradient-to-br ${color.gradient} transition-all duration-500 hover:shadow-2xl hover:scale-[1.08] cursor-pointer flex flex-col items-center justify-center p-6 text-center`}>
+                  <div className={`relative overflow-hidden rounded-xl h-32 md:h-40 ${color.bg} ${color.hover} transition-all duration-300 hover:shadow-lg hover:scale-[1.05] cursor-pointer flex flex-col items-center justify-center p-4 text-center border-2 border-transparent ${color.accent} hover:border-gold group`}>
                     
-                    {/* Animated background gradient overlay */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${color.accent} opacity-0 group-hover:opacity-20 transition-opacity duration-500`} />
-                    
-                    {/* Decorative shape - top right */}
-                    <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-white opacity-5 group-hover:opacity-10 transition-opacity duration-500" />
-                    
-                    {/* Icon container */}
-                    <div className={`relative z-10 ${color.light} backdrop-blur-sm rounded-full p-4 mb-4 transition-all duration-500 group-hover:scale-125 group-hover:shadow-lg`}>
+                    {/* Icon */}
+                    <div className={`${color.icon} transition-all duration-300 group-hover:scale-110 mb-2`}>
                       <svg
-                        className={`w-8 h-8 md:w-10 md:h-10 ${color.icon} transition-transform duration-500 group-hover:rotate-6`}
+                        className="w-6 h-6 md:w-8 md:h-8"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                       >
@@ -104,29 +99,9 @@ export default function Home() {
                     </div>
                     
                     {/* Category Name */}
-                    <h3 className="font-serif text-lg md:text-xl font-semibold text-white relative z-10 transition-all duration-500 group-hover:scale-110">
+                    <h3 className="font-serif text-sm md:text-base font-semibold text-white transition-all duration-300 line-clamp-2">
                       {cat.name}
                     </h3>
-                    
-                    {/* Arrow indicator - appears on hover */}
-                    <div className="mt-3 opacity-0 group-hover:opacity-100 transition-all duration-500 relative z-10 transform translate-y-2 group-hover:translate-y-0">
-                      <svg
-                        className="w-5 h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2.5}
-                          d="M13 7l5 5m0 0l-5 5m5-5H6"
-                        />
-                      </svg>
-                    </div>
-                    
-                    {/* Decorative shape - bottom left */}
-                    <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white opacity-5 group-hover:opacity-10 transition-opacity duration-500" />
                   </div>
                 </Link>
               );
