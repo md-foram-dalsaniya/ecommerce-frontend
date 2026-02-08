@@ -54,6 +54,10 @@ export default function ProductDetail() {
     }
   };
 
+  const handleNotifyMe = () => {
+    addToast("We'll notify you when this item is back in stock!");
+  };
+
   // Swipe for mobile
   const handleTouchStart = (e) => {
     touchStart.current = e.targetTouches[0].clientX;
@@ -206,13 +210,21 @@ export default function ProductDetail() {
             )}
 
             <div className="flex gap-4">
-              <button
-                onClick={handleAddToCart}
-                disabled={outOfStock}
-                className="flex-1 py-3.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.99]"
-              >
-                {outOfStock ? "Out of Stock" : "Add to Cart"}
-              </button>
+              {outOfStock ? (
+                <button
+                  onClick={handleNotifyMe}
+                  className="flex-1 py-3.5 border-2 border-primary text-primary rounded-xl font-medium hover:bg-primary/5 transition-all duration-300 active:scale-[0.99]"
+                >
+                  Notify Me
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 py-3.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 active:scale-[0.99]"
+                >
+                  Add to Cart
+                </button>
+              )}
               <button
                 onClick={handleWishlist}
                 className="p-3.5 border border-border rounded-xl hover:bg-surface hover:border-gold transition-all"
@@ -242,7 +254,7 @@ export default function ProductDetail() {
             <h2 className="font-serif text-xl font-semibold text-textDark mb-6">
               Recommended for You
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {recommended.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
@@ -256,16 +268,24 @@ export default function ProductDetail() {
             <div>
               <p className="text-sm text-muted">Total</p>
               <p className="font-bold text-primary text-lg">
-                <PriceDisplay amount={product.price * quantity} />
+                {outOfStock ? "—" : <PriceDisplay amount={product.price * quantity} />}
               </p>
             </div>
-            <button
-              onClick={handleAddToCart}
-              disabled={outOfStock}
-              className="px-8 py-3 bg-primary text-white rounded-xl font-medium disabled:bg-muted disabled:cursor-not-allowed"
-            >
-              {outOfStock ? "Out of Stock" : "Add to Cart"}
-            </button>
+            {outOfStock ? (
+              <button
+                onClick={handleNotifyMe}
+                className="px-8 py-3 border-2 border-primary text-primary rounded-xl font-medium hover:bg-primary/5 transition-all"
+              >
+                Notify Me
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="px-8 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90"
+              >
+                Add to Cart
+              </button>
+            )}
           </div>
         </div>
         <div className="h-20 lg:hidden" />

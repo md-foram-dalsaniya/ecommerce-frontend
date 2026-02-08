@@ -18,6 +18,7 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [headerScrolled, setHeaderScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,21 +35,42 @@ export default function Layout({ children }) {
 
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + "/");
 
+  // Close menu on route change
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen flex flex-col bg-background">
       {/* Header - sticky, slightly transparent on scroll */}
       <header
-        className={`sticky top-0 z-40 border-b transition-all duration-300 ${headerScrolled ? "bg-primary/95 backdrop-blur-sm border-white/10" : "bg-gradient-primary border-white/10"
+        className={`sticky top-0 z-40 border-b transition-all duration-300 relative ${headerScrolled ? "bg-primary/95 backdrop-blur-sm border-white/10" : "bg-gradient-primary border-white/10"
           } shadow-soft`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-[72px]">
-            <Link
-              to="/"
-              className="font-serif text-xl font-semibold text-white hover:opacity-90 transition-opacity duration-300"
-            >
-              ShopEase
-            </Link>
+            <div className="flex items-center gap-3">
+              {/* Hamburger - tablet & mobile */}
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="md:hidden p-2 rounded-lg text-white/90 hover:text-white hover:bg-white/10 transition-all"
+                aria-label="Toggle menu"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {menuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+              <Link
+                to="/"
+                className="font-serif text-xl font-semibold text-white hover:opacity-90 transition-opacity duration-300"
+              >
+                ShopEase
+              </Link>
+            </div>
 
             <nav className="hidden md:flex items-center gap-8">
               <Link
@@ -221,6 +243,71 @@ export default function Layout({ children }) {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Mobile/Tablet toggle menu - bg #1E293B */}
+        <div
+          className={`md:hidden absolute top-full left-0 right-0 overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
+            }`}
+        >
+          <nav
+            className="bg-[#1E293B] border-b border-white/10 py-4 px-4"
+            style={{ backgroundColor: "#1E293B" }}
+          >
+            <div className="flex flex-col gap-1">
+              <Link
+                to="/"
+                onClick={() => setMenuOpen(false)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname === "/" ? "text-gold bg-white/10" : "text-white/90 hover:text-white hover:bg-white/5"
+                  }`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/products"
+                onClick={() => setMenuOpen(false)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname.startsWith("/products") ? "text-gold bg-white/10" : "text-white/90 hover:text-white hover:bg-white/5"
+                  }`}
+              >
+                Products
+              </Link>
+              <Link
+                to="/orders"
+                onClick={() => setMenuOpen(false)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname.startsWith("/orders") ? "text-gold bg-white/10" : "text-white/90 hover:text-white hover:bg-white/5"
+                  }`}
+              >
+                Orders
+              </Link>
+              <Link
+                to="/cart"
+                onClick={() => setMenuOpen(false)}
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname === "/cart" ? "text-gold bg-white/10" : "text-white/90 hover:text-white hover:bg-white/5"
+                  }`}
+              >
+                Cart {getCartCount() > 0 && `(${getCartCount()})`}
+              </Link>
+              {user && !isAdmin && (
+                <Link
+                  to="/profile"
+                  onClick={() => setMenuOpen(false)}
+                  className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${location.pathname === "/profile" ? "text-gold bg-white/10" : "text-white/90 hover:text-white hover:bg-white/5"
+                    }`}
+                >
+                  Profile
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-3 rounded-xl text-sm font-medium text-gold/90 hover:text-gold hover:bg-white/5 transition-colors"
+                >
+                  Admin
+                </Link>
+              )}
+            </div>
+          </nav>
         </div>
       </header>
 

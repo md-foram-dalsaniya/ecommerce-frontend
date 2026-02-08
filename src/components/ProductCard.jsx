@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishlistContext";
@@ -34,24 +35,33 @@ export default function ProductCard({ product }) {
     }
   };
 
+  const handleNotifyMe = (e) => {
+    e.preventDefault();
+    addToast("We'll notify you when this item is back in stock!");
+  };
+
+  const [imgError, setImgError] = useState(false);
+  const imgSrc = imgError ? "https://via.placeholder.com/300?text=No+Image" : (product.images?.[0] || product.media?.[0]?.url || "https://via.placeholder.com/300");
+
   return (
     <Link to={`/products/${product.id}`} className="group block">
       <div className="bg-gradient-card rounded-xl shadow-card overflow-hidden hover:shadow-cardHover hover:-translate-y-0.5 transition-all duration-300 relative border border-border/50">
-        {/* Out of Stock overlay */}
+        {/* Out of Stock badge */}
         {outOfStock && (
-          <div className="absolute inset-0 bg-textDark/50 z-10 flex items-center justify-center">
-            <span className="bg-danger text-white px-4 py-2 rounded-xl font-semibold text-sm">
+          <div className="absolute top-3 left-3 z-10">
+            <span className="bg-danger text-white px-3 py-1.5 rounded-xl font-semibold text-xs shadow-sm">
               Out of Stock
             </span>
           </div>
         )}
 
-        {/* Image */}
+        {/* Image - aspect-square, object-cover, fallback on error */}
         <div className="aspect-square bg-surface relative overflow-hidden">
           <img
-            src={product.images?.[0] || "https://via.placeholder.com/300"}
+            src={imgSrc}
             alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+            onError={() => setImgError(true)}
           />
           {/* Wishlist button */}
           <button
@@ -88,13 +98,21 @@ export default function ProductCard({ product }) {
               </span>
             )}
           </div>
-          <button
-            onClick={handleAddToCart}
-            disabled={outOfStock}
-            className="mt-3 w-full py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 disabled:bg-muted disabled:cursor-not-allowed transition-all duration-300 active:scale-[0.98]"
-          >
-            {outOfStock ? "Out of Stock" : "Add to Cart"}
-          </button>
+          {outOfStock ? (
+            <button
+              onClick={handleNotifyMe}
+              className="mt-3 w-full py-2.5 border-2 border-primary text-primary rounded-xl font-medium hover:bg-primary/5 transition-all duration-300 active:scale-[0.98]"
+            >
+              Notify Me
+            </button>
+          ) : (
+            <button
+              onClick={handleAddToCart}
+              className="mt-3 w-full py-2.5 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-all duration-300 active:scale-[0.98]"
+            >
+              Add to Cart
+            </button>
+          )}
         </div>
       </div>
     </Link>

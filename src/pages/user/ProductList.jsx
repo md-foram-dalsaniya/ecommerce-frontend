@@ -55,8 +55,12 @@ export default function ProductList() {
         );
       }
     }
-    if (minPrice) prods = prods.filter((p) => p.price >= Number(minPrice));
-    if (maxPrice) prods = prods.filter((p) => p.price <= Number(maxPrice));
+    // Min–Max filter: apply ONLY when BOTH values are entered
+    if (minPrice && maxPrice) {
+      const min = Number(minPrice);
+      const max = Number(maxPrice);
+      prods = prods.filter((p) => p.price >= min && p.price <= max);
+    }
 
     if (sort === "price-low") prods = [...prods].sort((a, b) => a.price - b.price);
     else if (sort === "price-high")
@@ -80,51 +84,6 @@ export default function ProductList() {
   const inputClass =
     "px-4 py-2.5 border border-border rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all bg-background";
 
-  const FiltersContent = () => (
-    <>
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className={inputClass}
-      >
-        <option value="">All Categories</option>
-        {categories.map((cat) => (
-          <option key={cat.id} value={cat.slug}>
-            {cat.name}
-          </option>
-        ))}
-      </select>
-      <div className="flex gap-2 items-center">
-        <input
-          type="number"
-          placeholder="Min"
-          value={minPrice}
-          onChange={(e) => setMinPrice(e.target.value)}
-          className={`w-24 ${inputClass}`}
-        />
-        <span className="text-muted">-</span>
-        <input
-          type="number"
-          placeholder="Max"
-          value={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.value)}
-          className={`w-24 ${inputClass}`}
-        />
-      </div>
-      <select
-        value={sort}
-        onChange={(e) => setSort(e.target.value)}
-        className={inputClass}
-      >
-        {SORT_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    </>
-  );
-
   return (
     <Layout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -143,7 +102,50 @@ export default function ProductList() {
               onChange={(e) => setSearch(e.target.value)}
               className={`flex-1 min-w-[200px] ${inputClass}`}
             />
-            <FiltersContent />
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className={inputClass}
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+            <div className="flex gap-2 items-center">
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Min"
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value.replace(/\D/g, ""))}
+                className={`w-24 ${inputClass}`}
+              />
+              <span className="text-muted">-</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                placeholder="Max"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value.replace(/\D/g, ""))}
+                className={`w-24 ${inputClass}`}
+              />
+            </div>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className={inputClass}
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -201,20 +203,22 @@ export default function ProductList() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-textDark mb-2">Price Range</label>
+                  <label className="block text-sm font-medium text-textDark mb-2">Price Range (both required)</label>
                   <div className="flex gap-2">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       placeholder="Min"
                       value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
+                      onChange={(e) => setMinPrice(e.target.value.replace(/\D/g, ""))}
                       className={`flex-1 ${inputClass}`}
                     />
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="numeric"
                       placeholder="Max"
                       value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
+                      onChange={(e) => setMaxPrice(e.target.value.replace(/\D/g, ""))}
                       className={`flex-1 ${inputClass}`}
                     />
                   </div>
@@ -243,8 +247,8 @@ export default function ProductList() {
         )}
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {[...Array(12)].map((_, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[...Array(8)].map((_, i) => (
               <div key={i} className="h-80 rounded-xl animate-skeleton" />
             ))}
           </div>
@@ -257,7 +261,7 @@ export default function ProductList() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {paginatedProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}

@@ -42,21 +42,24 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Categories */}
+      {/* Categories - compact, premium */}
       {categories.length > 0 && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <h2 className="font-serif text-2xl font-semibold text-textDark mb-6">
+          <h2 className="font-serif text-xl font-semibold text-textDark inline-block">
             Shop by Category
           </h2>
-          <div className="h-px w-12 bg-gold mb-6" />
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="h-px w-10 bg-gold mt-2 mb-8" />
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 sm:gap-4">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
                 to={`/products?category=${cat.slug}`}
-                className="bg-gradient-card p-6 rounded-xl shadow-card hover:shadow-cardHover hover:-translate-y-0.5 transition-all duration-300 text-center border border-border/50"
+                className="group flex flex-col items-center justify-center py-4 px-3 sm:py-5 sm:px-4 rounded-xl bg-white border border-border/60 shadow-soft hover:shadow-cardHover hover:-translate-y-0.5 hover:border-gold/40 transition-all duration-300"
               >
-                <p className="font-medium text-textDark">{cat.name}</p>
+                <span className="text-sm sm:text-base font-medium text-textDark group-hover:text-primary transition-colors">
+                  {cat.name}
+                </span>
+                <span className="block mx-auto mt-2 h-0.5 w-0 bg-gold group-hover:w-8 transition-all duration-300 rounded-full" />
               </Link>
             ))}
           </div>
